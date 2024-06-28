@@ -20,6 +20,3 @@
 
 ## Requirements
 The requirements and specific versions are provided in `requirements.txt`.
-
-## Repository Structure
-- [**`neutral-atom-compilation`**](neutral-atom-compilation/): A folder that contains all of the code used to compile using the ELDI technique. For most users, the only file that should need to be interacted with is [**`eldi_generate_data.py`**](neutral-atom-compilation/neutralatomcompilation/eldi_generate_data.py), which converts output from ELDI into a set of coordinates and interpretable qasm files that can be input into our compiler.
