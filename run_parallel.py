@@ -26,7 +26,7 @@ Saves results in files for each algorithm.
 The file names are in the format: [Number of copies of the circuit runable in parallel]_[Array dimension size]_res.pkl
 """
 def compilation_save(algo_name, arr_dim_sz, num_copies, data, aod_dim=None): 
-    directory = f'./gal_par_res/{algo_name}/'
+    directory = f'./parallax_par_res/{algo_name}/'
 
     # Create the directory if it doesn't exist
     if not os.path.exists(directory):
@@ -224,23 +224,23 @@ def main_loop(algo):
             compilation_save(algo_name, arr_width, nc, [frontiers, move_count, total_max_moved_dist, cz_count, u_count, swap_trap_count, trap_dist, HDWR, elapsed_time, runtime , (par_dims,num_circs)])
             print("Compilation of " +algo+ " complete.")
 
-algo_list = ['adder_9',
+algo_list = [#'adder_9',
             'advantage_9',
-             'gcm_h6_13',
-             'heisenberg_16',
-             'hlf_10',
+#              'gcm_h6_13',
+#              'heisenberg_16',
+#              'hlf_10',
              'knn_n25',
-             'multiplier_10',
-             'qaoa_10',
-             'qec9xz_n17',
-             'qft_10',
-             'qugan_n39',
+#              'multiplier_10',
+#              'qaoa_10',
+#              'qec9xz_n17',
+#              'qft_10',
+#              'qugan_n39',
              'qv_32',
-             'sat_11',
+#              'sat_11',
              'seca_n11',
              'sqrt_18',
-             'tfim_128',
-             'vqe_uccsd_n28',
+#              'tfim_128',
+#              'vqe_uccsd_n28',
              'wstate_27'
 ]
 

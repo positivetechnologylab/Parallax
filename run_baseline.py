@@ -207,24 +207,24 @@ def main_loop(algo):
         print("Compilation of " +algo+ " complete.")
 
 # All algos; feel free to comment in/out desired algos (beloew are the ones used for benchmarks) 
-algo_list = [#'adder_9',
-            #  'advantage_9',
-            #  'gcm_h6_13',
-            #  'heisenberg_16',
-            #  'hlf_10',
-            #  'knn_n25',
-            #  'multiplier_10',
-            #  'qaoa_10',
-            #  'qec9xz_n17',
-            #  'qft_10',
-            #  'qugan_n39',
-            #  'qv_32',
-            #  'sat_11',
-            #  'seca_n11',
-            #  'sqrt_18',
-             'tfim_128'
-            #  'vqe_uccsd_n28',
-            #  'wstate_27'
+algo_list = ['adder_9',
+             'advantage_9',
+             'gcm_h6_13',
+             'heisenberg_16',
+             'hlf_10',
+             'knn_n25',
+             'multiplier_10',
+             'qaoa_10',
+             'qec9xz_n17',
+             'qft_10',
+             'qugan_n39',
+             'qv_32',
+             'sat_11',
+             'seca_n11',
+             'sqrt_18',
+             'tfim_128',
+             'vqe_uccsd_n28',
+             'wstate_27'
 ]
 
 for algo in algo_list:
