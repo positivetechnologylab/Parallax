@@ -1,5 +1,7 @@
 # PARALLAX: A Compiler for Neutral Atom Quantum Computers under Hardware Constraints
 
+Zenodo DOI: [![DOI](https://zenodo.org/badge/818305184.svg)](https://zenodo.org/doi/10.5281/zenodo.12587550)
+
 ***This repository contains the open-sourced artifacts for PARALLAX, which will appear at the ACM/IEEE International Conference on High-Performance Computing, Networking, Storage and Analysis (SC 2024).***
 
 ## Usage
