@@ -1,4 +1,6 @@
-# Parallax
+# PARALLAX: A Compiler for Neutral Atom Quantum Computers under Hardware Constraints
+
+To appear at the ACM/IEEE International Conference on High-Performance Computing, Networking, Storage and Analysis (SC 2024).
 
 ## Usage
 1. In your terminal, run `git clone https://github.com/positivetechnologylab/Parallax.git` to clone the repository.
