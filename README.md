@@ -10,7 +10,7 @@
   - Execute 'python3 graphine_discretized_compilation.py' for Graphine data from the 'Parallax directory'. Be sure to execute this AFTER running run_baseline as this script relies on pre-generated Graphine results.
   - See below for directions on generating ELDI results
 5. To generate results as in Fig 11 of the paper, users should:
-  - Execute 'python3 run_baseline.py [arg]' from the 'Parallax' directory to generate Parallax results for parallelized circuits. As before, use '0' for the arg if you don't need to generate Graphine results, and '1' only if you do.
+  - Execute 'python3 run_parallel.py [arg]' from the 'Parallax' directory to generate Parallax results for parallelized circuits. As before, use '0' for the arg if you don't need to generate Graphine results, and '1' only if you do.
   - Execute 'python3 graphine_discretized_compilation_par.py' from 'Parallax' for parallelized Graphine circuit data.
   - See below for directions on generating ELDI results
 6. To generate ELDI results we used to compare against our technique, from the Parallax directory users should:
