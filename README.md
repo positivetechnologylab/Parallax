@@ -22,3 +22,6 @@ To appear at the ACM/IEEE International Conference on High-Performance Computing
 
 ## Requirements
 The requirements and specific versions are provided in `requirements.txt`.
+
+## Copyright
+Copyright © 2023 Positive Technology Lab. All rights reserved. For permissions, contact ptl@rice.edu.
