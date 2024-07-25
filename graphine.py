@@ -13,7 +13,6 @@ import qiskit.qasm3 as qasm3
 from qiskit.circuit import Qubit
 from qiskit.converters import circuit_to_dag, dag_to_dagdependency, dag_to_circuit
 from qiskit import QuantumRegister, QuantumCircuit
-from bqskit.ir.lang.qasm2.qasm2 import OPENQASM2Language
 from qiskit.visualization import dag_drawer
 from qiskit.dagcircuit import DAGCircuit, DAGInNode, DAGOpNode, DAGOutNode
 from qiskit import transpile
