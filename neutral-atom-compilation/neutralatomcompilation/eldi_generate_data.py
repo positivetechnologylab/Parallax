@@ -5,7 +5,9 @@ that can be used to compile the circuit.
 # HDWR = 'Quera'
 HDWR = 'Atom'
 
-import neutralatomcompilation as nac
+import neutralatomcompilation.hardware as nac_hw
+import neutralatomcompilation.interaction_model as nac_im
+import neutralatomcompilation.compiler as nac_compiler
 from qiskit import QuantumCircuit
 from qiskit.circuit import Qubit
 import qiskit.qasm3 as qasm3
@@ -37,15 +39,15 @@ for filename in os.listdir(directory_path):
             with open(full_path, 'r') as f:
                 qasm_str = f.read()
             if HDWR == 'Quera':
-                hw = nac.Hardware(num_dimensions=2, dimensions_length=(16, 16), dimensions_spacing=(1,1))
+                hw = nac_hw.Hardware(num_dimensions=2, dimensions_length=(16, 16), dimensions_spacing=(1,1))
             elif HDWR == 'Atom':
-                hw = nac.Hardware(num_dimensions=2, dimensions_length=(35, 35), dimensions_spacing=(1,1))
+                hw = nac_hw.Hardware(num_dimensions=2, dimensions_length=(35, 35), dimensions_spacing=(1,1))
             else:
                 print("Error on Hardware")
                 break
-            im = nac.InteractionModel(hardware=hw, d_to_r=lambda x: x / 2, max_int_dist=2)
+            im = nac_im.InteractionModel(hardware=hw, d_to_r=lambda x: x / 2, max_int_dist=2)
             qc = QuantumCircuit.from_qasm_str(qasm_str)
-            comp = nac.LookaheadCompiler(interaction_model=im, hardware=hw)
+            comp = nac_compiler.LookaheadCompiler(interaction_model=im, hardware=hw)
             compiled_circ, l2p, p2l, logic_phys_map = comp.compile(qc, lookahead_distance=float('inf'), weighting_function=lambda x: np.e ** (-x))
             comp_circs[full_path] = compiled_circ
             end = time.time()
@@ -164,10 +166,10 @@ for filename in os.listdir(directory_path):
                 start = time.time()
                 with open(full_path, 'r') as f:
                     qasm_str = f.read()
-                hw = nac.Hardware(num_dimensions=2, dimensions_length=(dim_sz, dim_sz), dimensions_spacing=(1,1))
-                im = nac.InteractionModel(hardware=hw, d_to_r=lambda x: x / 2, max_int_dist=2)
+                hw = nac_hw.Hardware(num_dimensions=2, dimensions_length=(dim_sz, dim_sz), dimensions_spacing=(1,1))
+                im = nac_im.InteractionModel(hardware=hw, d_to_r=lambda x: x / 2, max_int_dist=2)
                 qc = QuantumCircuit.from_qasm_str(qasm_str)
-                comp = nac.LookaheadCompiler(interaction_model=im, hardware=hw)
+                comp = nac_compiler.LookaheadCompiler(interaction_model=im, hardware=hw)
                 compiled_circ, l2p, p2l, logic_phys_map = comp.compile(qc, lookahead_distance=float('inf'), weighting_function=lambda x: np.e ** (-x))
                 comp_circs[full_path+'_'+str(par_fact)+'_'+str(dim_sz)] = compiled_circ
                 end = time.time()
