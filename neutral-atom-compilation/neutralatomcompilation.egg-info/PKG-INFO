@@ -10,6 +10,12 @@ Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: matplotlib
+Requires-Dist: qutip
+Requires-Dist: qiskit
+Requires-Dist: networkx
 
 # Neutral Atom Compilation
 

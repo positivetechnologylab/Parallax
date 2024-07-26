@@ -1,7 +1,5 @@
 README.md
 setup.py
-neutralatomcompilation/__init__.py
-neutralatomcompilation/bakermain.py
 neutralatomcompilation/eldi_generate_data.py
 neutralatomcompilation.egg-info/PKG-INFO
 neutralatomcompilation.egg-info/SOURCES.txt

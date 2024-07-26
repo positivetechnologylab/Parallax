@@ -415,3 +415,252 @@ fig.legend(handles=[graphine_legend, eldi_legend, parallax_legend], loc='upper l
 plt.savefig('./figures/shot_reduction.pdf', bbox_inches='tight', pad_inches=0.1)
 plt.close()
 
+"""
+Generate graph comparing whether qubits return to home location or not (Fig. 12 in the paper)
+"""
+
+def load_data_from_files(directory):
+    dir_path = os.path.join(directory, HDWR)
+    data_dict = {}
+
+    for filename in os.listdir(dir_path):
+        if filename.endswith("_res.pkl"):
+            algo_name = filename.rsplit('_res', 1)[0]
+            full_path = os.path.join(dir_path, filename)
+           
+            with open(full_path, 'rb') as file:
+                data = pickle.load(file)
+            data_dict[algo_name] = data
+
+    return data_dict
+
+directory = './results_no_home'
+data_dict_no_home = load_data_from_files(directory)
+directory = './parallax_results'
+data_dict_w_home = load_data_from_files(directory)
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+COLORS = {
+    'NoHome': '#CAB8FF',
+    'Home': '#831187'
+}
+
+keys = list(data_dict_no_home.keys())
+
+keys = sorted(data_dict_no_home.keys(), key=lambda x: list(LABELS.keys()).index(x))
+
+values_no_home = np.array([data_dict_no_home[key][-3] for key in keys])
+values_w_home = np.array([data_dict_w_home[key][-3] for key in keys])
+
+worst_case_values = np.maximum(values_no_home, values_w_home)
+percent_no_home = (values_no_home / worst_case_values) * 100
+percent_w_home = (values_w_home / worst_case_values) * 100
+
+x = np.arange(len(keys))  # the label locations
+width = 0.33  # the width of the bars, adjust if necessary to control spacing
+
+fig, ax = plt.subplots(figsize=(13.43, 2.7), dpi=300) 
+
+rects1 = ax.bar(x - width/2, percent_no_home, width, label=r'\textsc{Parallax} without AOD Atoms Returning to Home', color=COLORS['NoHome'], edgecolor='black')
+rects2 = ax.bar(x + width/2, percent_w_home, width, label=r'\textsc{Parallax} with AOD Atoms Returning to Home', color=COLORS['Home'], edgecolor='black')
+
+ax.set_xlim(-0.5, len(keys)-0.5)
+
+ax.set_xticks(x)
+
+label_texts = [LABELS[key] for key in keys]
+ax.set_xticklabels(label_texts, rotation=0, ha="center",fontsize=14)
+
+ax.set_ylabel('Circ. Execution Time \n(\% of Worst Case)',fontsize=14)
+
+margin = width * len(keys) * 0.05 
+ax.set_xlim(-margin-.25, len(keys)-1 + margin+.25) 
+
+ax.set_ylim(0, 100) 
+ax.set_yticks([0, 20, 40, 60, 80, 100])
+ax.grid(axis='y', which='major', linestyle='-', linewidth=0.5)
+ax.set_axisbelow(True)
+ax.legend(
+    bbox_to_anchor=(0.145, 0.972),
+    ncol=2,
+    handletextpad=0.2,
+    handlelength=2,
+    columnspacing=1,
+    edgecolor='black',
+    fontsize=14
+)
+
+fig.tight_layout()
+
+for rect, value in zip(rects1, values_no_home):
+    height = rect.get_height()
+    if height > 40:
+        ax.text(rect.get_x() + rect.get_width() / 2. + 0.03, 2, f'{value:.0f}', ha='center', va='bottom', rotation=90, fontsize=12)
+    else:
+        ax.text(rect.get_x() + rect.get_width() / 2. + 0.03, height+2, f'{value:.0f}', ha='center', va='bottom', rotation=90, fontsize=12)
+       
+for rect, value in zip(rects2, values_w_home):
+    height = rect.get_height()
+    if height > 40:
+        ax.text(rect.get_x() + rect.get_width() / 2. + 0.03, 2, f'{value:.0f}', ha='center', va='bottom', rotation=90, color='white', fontsize=12)
+    else:
+        ax.text(rect.get_x() + rect.get_width() / 2. + 0.03, height+2, f'{value:.0f}', ha='center', va='bottom', rotation=90, fontsize=12)
+ax.tick_params(axis='y', labelsize=14)
+
+plt.savefig('./figures/home_nohome_runtime.pdf')
+
+
+"""
+Generate graph comparing different AOD row/column counts (Fig. 13)
+"""
+
+import numpy as np
+import math
+import matplotlib as mpl
+import matplotlib.pyplot as mp
+import pickle
+import os
+import re
+from decimal import Decimal, getcontext
+from matplotlib import rc
+import matplotlib.patches as mpatches
+
+HDWR = 'atom'
+
+params = {
+    'font.family': 'serif',
+    'text.usetex': True,
+    'pgf.rcfonts': False,
+    'pgf.texsystem': 'xelatex',
+    'pgf.preamble': r'\usepackage{fontspec,physics}',
+}
+
+mpl.rcParams.update(params)
+
+INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] #for algos titles/labels
+
+TITLES = ['adder_9',
+            'advantage_9',
+            'gcm_h6_13',
+            'heisenberg_16',
+            'hlf_10',
+            'knn_n25',
+            'multiplier_10',
+            'qaoa_10',
+            'qec9xz_n17',
+            'qft_10',
+            'qugan_n39',
+            'qv_32',
+            'sat_11',
+            'seca_n11',
+            'sqrt_18',
+            'tfim_128',
+            'vqe_uccsd_n28',
+            'wstate_27'
+]
+
+LABELS = {'adder_9'      : 'ADD'     ,
+          'advantage_9'  : 'ADV' ,
+          'gcm_h6_13'       : 'GCM'       ,
+          'heisenberg_16': 'HSB',
+          'hlf_10'       : 'HLF'       ,
+          'knn_n25'     : 'KNN'     ,
+          'multiplier_10': 'MLT',
+          'qaoa_10'      : 'QAOA'      ,
+          'qec9xz_n17'       : 'QEC'       ,
+          'qft_10'       : 'QFT'       ,
+          'qugan_n39'       : 'QGAN'       ,
+          'qv_32'       : 'QV'       ,
+          'sat_11'       : 'SAT'       ,
+          'seca_n11'       : 'SECA'       ,
+          'sqrt_18'      : 'SQRT'      ,
+          'tfim_128'     : 'TFIM'      ,
+          'vqe_uccsd_n28'     : 'VQE'      ,
+          'wstate_27'    : 'WST'   }
+
+def load_data_from_files_sorted(directory,algo):
+    data_dict = {}  # Dictionary to store data from each file
+    files_with_numbers = []  # List to store filenames along with their numbers
+
+    for filename in os.listdir(directory):
+        if filename.endswith("_res.pkl"):
+            number = int(filename.split('_')[-2])
+            files_with_numbers.append((number, filename))
+
+    files_with_numbers.sort(key=lambda x: x[0])
+
+    move_cts = []
+    par_dims,num_circs = None,None
+    for number, filename in files_with_numbers:
+        full_path = os.path.join(directory, filename)
+        with open(full_path, 'rb') as file:
+            data = pickle.load(file)
+        data_dict[number] = data
+    return data_dict
+
+data_dict = {}
+for algo in TITLES:
+    directory = './aod_count_changing_results/'+algo 
+    data_dict[algo] = load_data_from_files_sorted(directory, algo)
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.colors as mcolors
+from matplotlib.colors import LinearSegmentedColormap, to_rgba
+
+algorithms = sorted(data_dict.keys(), key=lambda x: TITLES.index(x))
+
+counts = sorted(list(data_dict[algorithms[0]].keys()))
+
+x = np.arange(len(algorithms))
+width = 0.15
+spacing = 0.005
+
+fig, ax = plt.subplots(figsize=(13.3, 2.7), dpi=300)
+
+start_color = '#E6E6FA'
+specific_purple = '#831187'
+end_color = '#000000'
+
+start_color_rgba = np.array(mcolors.to_rgba(start_color))
+specific_purple_rgba = np.array(mcolors.to_rgba(specific_purple))
+end_color_rgba = np.array(mcolors.to_rgba(end_color))
+
+intermediate_color1 = mcolors.to_hex(start_color_rgba * 0.67 + specific_purple_rgba * 0.33)
+intermediate_color2 = mcolors.to_hex(start_color_rgba * 0.33 + specific_purple_rgba * 0.67)
+
+colors_list = [start_color, intermediate_color1, intermediate_color2, specific_purple, end_color]
+
+custom_cmap = LinearSegmentedColormap.from_list("custom_purple_to_black", colors_list, N=5)
+
+colors = custom_cmap(np.linspace(0, 1, 5))
+
+val_dict = {}
+for i, count in enumerate(counts):
+    values = [(data_dict[algo][count][-3] / max(data_dict[algo][c][-3] for c in counts) * 100) for algo in algorithms]
+    val_dict[count] = values
+    ax.bar(x - (len(counts) * width / 2) + i * (width + spacing), values, width, color=colors[i], edgecolor='black')
+
+ax.set_xticks(x)
+ax.set_xticklabels([LABELS.get(algo, algo) for algo in algorithms], rotation=0, ha="center", fontsize=14)
+
+margin = width * len(algorithms) * 0.05
+ax.set_xlim(-margin-.54, len(algorithms)-1 + margin+.42)
+
+ax.set_ylim(0, 100)
+ax.set_yticks([0, 20, 40, 60, 80, 100])
+ax.set_ylabel('Circ. Execution Time \n(\% of Worst Case)', fontsize=14)
+
+ax.grid(axis='y', which='major', linestyle='-', linewidth=0.5)
+ax.set_axisbelow(True)
+
+legend_labels = ['AOD Count 1', 'AOD Count 5', 'AOD Count 10', r'AOD Count 20 (\textsc{Parallax})', 'AOD Count 40']
+legend_patches = [mpatches.Patch(facecolor=colors[i], label=label, edgecolor='black') for i, label in enumerate(legend_labels)]
+ax.legend(handles=legend_patches, ncol=len(legend_labels), loc='upper center', bbox_to_anchor=(0.57, 1.3), fontsize=14, edgecolor='black', handletextpad=0.2, columnspacing=0.6)
+ax.tick_params(axis='y', labelsize=14)
+fig.tight_layout()
+
+plt.savefig('./figures/aods_time.pdf')
